@@ -9,3 +9,13 @@ vegadr <- vegadr[vegadr %>% grepl("Wien", .)]
 vegadr <- substr(x = vegadr, 1, 
                  regexpr("Wien", vegadr) + 3)
 vegadr <- gsub("\n\n", " ", vegadr)
+Eis <- tibble(Adr= vegadr) %>%
+  geocode(Adr, "osm")
+
+
+# Visualize ---------------------------------------------------------------
+Stanizel <- makeIcon("StanizelIcon.png",
+                          iconWidth = 20, iconHeight = 30)
+leaflet() %>% addTiles() %>% setView(lat=48.2,16.4,zoom=11) %>% 
+  addMarkers(Eis$long, Eis$lat, icon = Stanizel)
+
