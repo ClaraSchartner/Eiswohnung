@@ -14,7 +14,8 @@ vegadr <- gsub("\n\n", " ", vegadr)
 Eiscoor <- tibble(Adr= vegadr) %>%
   geocode(Adr, "osm") 
 
-Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = 3857)
+Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
+st_write(Eis, "data/Eis.shp")
 
 # Visualize ---------------------------------------------------------------
 Stanizel <- makeIcon("StanizelIcon.png",
@@ -27,10 +28,9 @@ leafIce
 
 # Loop making isochrone for every ice cream
 # within the loop union
-bins <- c(0,5,10)
-#for(i in seq_along(Eiscoor$long)){
- for(i in 1:4){
-   Sys.sleep(rnorm(1,350,40))
+bins <- c(0,5,8,10)
+for(i in seq_along(Eiscoor$long)){
+   Sys.sleep(rnorm(1,500,40))
 EisIso <- osrmIsochrone(loc =c(Eiscoor$long[i], Eiscoor$lat[i]), 
                         breaks = bins, 
                         returnclass="sf")
@@ -45,6 +45,13 @@ EisAlle <- st_union(EisIso, EisAlle)
 EisAlle$min <- apply(EisAlle,1, function(x)min(x$min, x$min.1))
 EisAlle<- select(EisAlle, min)
 }
+saveRDS(EisAlle, "IsoIce.rds")
+EisAlle <- readRDS("IsoIce.rds")
+
+
+EisAlle1 <- st_union(EisAlle)
+
+
 # visualise
 pal <- colorNumeric(
   palette = "Blues",
