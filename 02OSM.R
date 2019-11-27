@@ -6,4 +6,3 @@ poin <- q$osm_points %>%
   dplyr::select(name, geometry)%>%  
   st_as_sf() 
 saveRDS(poin, "poi.rds")
-
