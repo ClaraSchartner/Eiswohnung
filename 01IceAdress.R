@@ -18,7 +18,7 @@ Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = "+proj=longlat +datum=W
 st_write(Eis, "data/Eis.shp")
 
 # Visualize ---------------------------------------------------------------
-Stanizel <- makeIcon("StanizelIcon.png",
+Stanizel <- makeIcon("data/StanizelIcon.png",
                           iconWidth = 20, iconHeight = 30)
 leafIce <- leaflet() %>% addTiles() %>% setView(lat=48.2,16.4,zoom=12) %>% 
   addMarkers(Eiscoor$long, Eiscoor$lat, icon = Stanizel)
@@ -45,8 +45,8 @@ EisAlle <- st_union(EisIso, EisAlle)
 EisAlle$min <- apply(EisAlle,1, function(x)min(x$min, x$min.1))
 EisAlle<- select(EisAlle, min)
 }
-saveRDS(EisAlle, "IsoIce.rds")
-EisAlle <- readRDS("IsoIce.rds")
+saveRDS(EisAlle, "data/IsoIce.rds")
+EisAlle <- readRDS("data/IsoIce.rds")
 
 
 EisAlle1 <- st_union(EisAlle)
