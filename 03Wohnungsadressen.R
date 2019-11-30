@@ -1,12 +1,14 @@
 source("00libraries.R")
-#url <- "https://www.immowelt.at/expose/2s8d74t"
-#url <-"https://www.immowelt.at/expose/2qqw64v"
+#   url <- "https://www.immowelt.at/expose/2s8d74t"
+# platz aber keine hausnummer
 #url <- "https://www.immowelt.at/expose/2skw84t"
-Eisfunc <- function(url){
+
+Eis <- st_read("data/Eis.shp", quiet=TRUE)
+
+Eisfunc <- function(url, Eis = Eis){
   if(class(url)!="character"){
     as.character(url)
   }
-  Eis <- st_read("data/Eis.shp", quiet=TRUE)
   bez <- st_read("data/BEZIRKSGRENZEOGDPolygon.shp", quiet=TRUE) %>% select(DISTRICT_C)
 text <- read_html(url) %>%
   html_nodes('.section_content.iw_right') %>%
@@ -26,9 +28,18 @@ Anzei <- Anzei %>% gsub("\r\n", "", ., fixed=TRUE) %>%
   gsub("\n", "", ., fixed=TRUE) %>% 
 strsplit(" ") %>% 
   lapply(function(x)x[unlist(lapply(x, function(x)x != ""))])
+stranz <- grep(
+  "Straße|strasse|platz|Weg|gasse", 
+  Anzei[[1]], ignore.case = TRUE)
+stranz <- stranz[!stranz %in% grep("Landstraße", Anzei[[1]], ignore.case = TRUE)][1]
 
-
-Anzei[[1]]<- Anzei[[1]][1:grep("Wien", Anzei[[1]])[1]]
+hausn <- as.numeric(Anzei[[1]][stranz+1])
+hausn <- ifelse(!is.na(hausn)&hausn<1000,
+                stranz+1, NA)
+Anzei[[1]] <- Anzei[[1]][c(1:2, stranz, hausn)]
+              
+#Anzei[[1]]<- Anzei[[1]][1:grep("Wien", Anzei[[1]])[1]]
+Anzei[[1]]<- na.omit(Anzei[[1]])
 
 if(length(Anzei[[1]])>2){
   Anzei[[1]] <- paste(Anzei[[1]], collapse = " ")
@@ -69,20 +80,16 @@ Locations<- tibble(name= str) %>%
 
 #Locations <- Locations[!Locations$name %>% duplicated(),]
 
-bez <- bez %>% filter(DISTRICT_C == as.numeric(Anzei[[1]][1])) 
+bez <- bez %>% filter(DISTRICT_C == as.numeric(Anzei[[1]][1])) %>% st_buffer(0.005)
 # maybe add small buffer later
 Locations <- Locations[bez,]
+}
 
+Locations
 
 }
-if(nrow(Locations)==0){
-  paste("No location information retrieved")
-} else{
+#Eisfunc("https://www.immowelt.at/expose/2s8d74t")   
 
 
 
-minD <- st_distance(Eis, Locations) %>% apply(2, min) %>% mean()
 
-minD
-}}
-#Eisfunc("https://www.immowelt.at/expose/2s8d74t")                                      
