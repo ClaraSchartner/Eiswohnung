@@ -10,12 +10,14 @@ vegadr <- vegadr[vegadr %>% grepl("Wien", .)]
 vegadr <- substr(x = vegadr, 1, 
                  regexpr("Wien", vegadr) + 3)
 vegadr <- gsub("\n\n", " ", vegadr)
+vegadr <- c(vegadr, "Rotenturmstraße 14, 1010 Wien", "Mariahilfer Straße 33, 1060 Wien",
+            "Neubaugasse 9, 1070 Wien", "Reumannplatz 13, 1100 Wien")
 # get coordinates for adresses (=geocode)
 Eiscoor <- tibble(Adr= vegadr) %>%
   geocode(Adr, "osm") 
 
 Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
-st_write(Eis, "data/Eis.shp")
+st_write(Eis, "data/Eis.shp", update = TRUE)
 Eis <- st_read("data/Eis.shp")
 
 # Visualize ---------------------------------------------------------------
