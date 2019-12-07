@@ -1,3 +1,4 @@
 # To do
-# zentrieren der Karte
-# reactive nur einmal aufrufen müssen
+# überschrift mit in den Text aufnehmen
+# Haussymbos überdenken
+# Eisgreissler einbauen
