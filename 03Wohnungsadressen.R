@@ -43,8 +43,8 @@ Anzei[[1]]<- na.omit(Anzei[[1]])
 
 if(length(Anzei[[1]])>2){
   Anzei[[1]] <- paste(Anzei[[1]], collapse = " ")
-  Locations <- tibble(Adr= Anzei[[1]]) %>%
-    geocode(Adr, "osm") %>% 
+  Locations <- tibble(name= Anzei[[1]]) %>%
+    geocode(name, "osm") %>% 
     st_as_sf(coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
 } else{
 # Keywords which could be followed by info about the location
