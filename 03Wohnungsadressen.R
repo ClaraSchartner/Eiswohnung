@@ -3,13 +3,13 @@ source("00libraries.R")
 # platz aber keine hausnummer
 # url <- "https://www.immowelt.at/expose/2p6t848"
 
-Eis <- st_read("data/Eis.shp", quiet=TRUE)
+Eis <- st_read("www/Eis.shp", quiet=TRUE)
 
 Eisfunc <- function(url, Eis = Eis){
   if(class(url)!="character"){
     as.character(url)
   }
-  bez <- st_read("data/BEZIRKSGRENZEOGDPolygon.shp", quiet=TRUE) %>% select(DISTRICT_C)
+  bez <- st_read("www/BEZIRKSGRENZEOGDPolygon.shp", quiet=TRUE) %>% select(DISTRICT_C)
 text <- read_html(url) %>%
   html_nodes('.section_content.iw_right') %>%
   html_text()
@@ -61,7 +61,7 @@ Loc <- lapply(Offi, function(x)Anzei[[2]][(x-4):(x+6)]) %>% unlist() %>% unique(
 Loc <- Loc[!Loc %in% tm::stopwords("german")]
 
 
-poi <- readRDS("data/poi.rds")
+poi <- readRDS("www/poi.rds")
 poi$name<-tolower(poi$name)
 Locations <- Loc[Loc %in% poi$name]
 Locations <- poi[which(poi$name==Locations),]
