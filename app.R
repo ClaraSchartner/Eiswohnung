@@ -1,10 +1,12 @@
 library(shiny)
+library(shinythemes)
+library(rsconnect)
 source('03Wohnungsadressen.R', local = TRUE)
 #source('04Visualize.R', local = TRUE)
 
 
 
-ui <- fluidPage(
+ui <- fluidPage(theme = shinytheme("yeti"),
   headerPanel(
     "Distance to Ice cream shop from appartment listed"
   ),
@@ -108,7 +110,7 @@ server <- function(input, output) {
   output$map <- renderLeaflet({
     if (class(Info()[["Route"]])[1] == "sf") {
     zoom <- ifelse(Info()[["minD"]] > 3000, 13, 14)
-    Stanizel <- makeIcon("data/StanizelIcon.png",
+    Stanizel <- makeIcon("www/StanizelIcon.png",
                          iconWidth = 20,
                          iconHeight = 30)
     leafIce <- leaflet() %>% addTiles() %>%
@@ -120,7 +122,7 @@ server <- function(input, output) {
       )),
       zoom = zoom) %>%
       addMarkers(st_coordinates(Eis)[, 1], st_coordinates(Eis)[, 2] , icon = Stanizel)
-    Haus <- makeIcon("data/hausIcon.png",
+    Haus <- makeIcon("www/hausIcon.png",
                      iconWidth = 20,
                      iconHeight = 30)
     
