@@ -147,12 +147,7 @@ server <- function(input, output) {
                       st_coordinates(Info()[["Locationsh"]])[, 2], 
                       color = "green", fillOpacity = 0.5) %>% 
           addPolylines(st_coordinates(Info()[["Route"]])[, 1], st_coordinates(Info()[["Route"]])[, 2])
-          # addCircles(
-          #   st_coordinates(Info()[["Locationsh"]])[, 1],
-          #   st_coordinates(Info()[["Locationsh"]])[, 2] ,
-          #   radius = 10,
-          #   color = "red"
-          # ) %>%
+
           
       }
     }
