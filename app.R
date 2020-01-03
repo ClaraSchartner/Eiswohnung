@@ -14,8 +14,8 @@ ui <- fluidPage(theme = shinytheme("yeti"),
     helpText("Input an apartment listing and receive information and its ice-cream infrastructure"),
   textInput(
     "caption",
-    label = "Input a link from www.immowelt.at:",
-    "https://www.immowelt.at/expose/2s2hc4x"
+    label = "Input a link from www.immowelt.at or an address:",
+    "https://www.immowelt.at/expose/2tqcg49"
   ),
   helpText("Calculates the distance to closest Veganista, Eisgreissler and Tichy")
  # helpText(a("clickediclick"), href = "www.immowelt.at")
@@ -33,7 +33,14 @@ are used as an indiation of location.
 ))
 server <- function(input, output) {
   Info <- reactive({
-    Locations <- Eisfunc(input$caption)
+    if(grepl(input$caption,pattern = "immowelt")){
+      Locations <- Eisfunc(input$caption)
+    } else {
+      Locations <- tibble(name= paste(input$caption, "Wien")) %>%
+        geocode(name, "osm") %>% 
+        st_as_sf( coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs") 
+    }
+ 
     dis <- st_distance(Eis, Locations)
     minD <- dis %>% apply(2, min)  %>% mean()
     numE <- which(apply(dis, 1, min) == as.numeric(min(dis)))
@@ -98,33 +105,32 @@ server <- function(input, output) {
           Eis[Info()[["numE"]], ]$Adr %>% as.character()
         )
       }
-      
-      
-      
-      
     }
   })
   
   
   
   output$map <- renderLeaflet({
-    if (class(Info()[["Route"]])[1] == "sf") {
-    zoom <- ifelse(Info()[["minD"]] > 3000, 13, 14)
     Stanizel <- makeIcon("www/StanizelIcon.png",
                          iconWidth = 20,
                          iconHeight = 30)
+    Haus <- makeIcon("www/hausIcon.png",
+                     iconWidth = 20,
+                     iconHeight = 30)
     leafIce <- leaflet() %>% addTiles() %>%
+      addMarkers(st_coordinates(Eis)[, 1], st_coordinates(Eis)[, 2] , icon = Stanizel)
+    if (class(Info()[["Route"]])[1] == "sf") {
+    zoom <- ifelse(Info()[["minD"]] > 3000, 13, 14)
+
+    leafIce %>% 
       setView(mean(c(
         st_coordinates(Info()[["Locationmean"]])[, 1], st_coordinates(Eis[Info()[["numE"]], ])[, 1]
       )),
       mean(c(
         st_coordinates(Info()[["Locationmean"]])[, 2], st_coordinates(Eis[Info()[["numE"]], ])[, 2]
       )),
-      zoom = zoom) %>%
-      addMarkers(st_coordinates(Eis)[, 1], st_coordinates(Eis)[, 2] , icon = Stanizel)
-    Haus <- makeIcon("www/hausIcon.png",
-                     iconWidth = 20,
-                     iconHeight = 30)
+      zoom = zoom)
+
     
     
   
