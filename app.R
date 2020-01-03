@@ -103,7 +103,7 @@ server <- function(input, output) {
           round(Info()[["minD"]]),
           "m to \n",
           Eis[Info()[["numE"]], ]$Adr %>% as.character()
-        )
+        )[1]
       }
     }
   })
