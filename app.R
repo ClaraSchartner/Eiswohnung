@@ -117,7 +117,7 @@ server <- function(input, output) {
     Haus <- makeIcon("www/hausIcon.png",
                      iconWidth = 20,
                      iconHeight = 30)
-    leafIce <- leaflet() %>% addTiles() %>%
+    leafIce <- leaflet() %>%   addTiles() %>%
       addMarkers(st_coordinates(Eis)[, 1], st_coordinates(Eis)[, 2] , icon = Stanizel)
     if (class(Info()[["Route"]])[1] == "sf") {
     zoom <- ifelse(Info()[["minD"]] > 3000, 13, 14)
@@ -143,13 +143,17 @@ server <- function(input, output) {
       }
       else{
         leafIce %>%
-          addCircles(
-            st_coordinates(Info()[["Locationsh"]])[, 1],
-            st_coordinates(Info()[["Locationsh"]])[, 2] ,
-            radius = 10,
-            color = "red"
-          ) %>%
+          addPolygons(st_coordinates(Info()[["Locationsh"]])[, 1],
+                      st_coordinates(Info()[["Locationsh"]])[, 2], 
+                      color = "green", fillOpacity = 0.5) %>% 
           addPolylines(st_coordinates(Info()[["Route"]])[, 1], st_coordinates(Info()[["Route"]])[, 2])
+          # addCircles(
+          #   st_coordinates(Info()[["Locationsh"]])[, 1],
+          #   st_coordinates(Info()[["Locationsh"]])[, 2] ,
+          #   radius = 10,
+          #   color = "red"
+          # ) %>%
+          
       }
     }
     else{ if(nrow(st_coordinates(Info()[["Locationsh"]]))>0){
