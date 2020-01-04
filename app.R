@@ -2,6 +2,8 @@ library(shiny)
 library(shinythemes)
 library(rsconnect)
 source('03Wohnungsadressen.R', local = TRUE)
+source('03aGetGeofromAddress.R', local = TRUE)
+source('04getfurtherlinks.R', local = TRUE)
 #source('04Visualize.R', local = TRUE)
 
 
@@ -15,7 +17,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),
   textInput(
     "caption",
     label = "Input a link from www.immowelt.at or an address:",
-    "https://www.immowelt.at/expose/2tqcg49"
+    extracturls()[1]
   ),
   helpText("Calculates the distance to closest Veganista, Eisgreissler and Tichy")
  # helpText(a("clickediclick"), href = "www.immowelt.at")
@@ -40,50 +42,9 @@ server <- function(input, output) {
         geocode(name, "osm") %>% 
         st_as_sf( coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs") 
     }
- 
-    dis <- st_distance(Eis, Locations)
-    minD <- dis %>% apply(2, min)  %>% mean()
-    numE <- which(apply(dis, 1, min) == as.numeric(min(dis)))
-    Locationsh <- Locations[!duplicated(Locations$name), ]
-    Locationmean <- st_sf(name = "mean", st_sfc(st_point(c(
-      mean(st_coordinates(Locationsh)[, 1]),
-      mean(st_coordinates(Locationsh)[, 2])
-    ))),
-    crs = "+proj=longlat +datum=WGS84 +no_defs")
-    route <- osrmRoute(
-      src = Eis[numE, ],
-      dst = Locationmean,
-      overview = "full",
-      returnclass = "sf"
-    )
-    # if error due to too many requests, try again
-    i <- 1
-    while (is.null(route) && i < 5) {
-      Sys.sleep(i)
-      route <- osrmRoute(
-        src = Eis[numE, ],
-        dst = Locationmean,
-        overview = "full",
-        returnclass = "sf"
-      )
-      i <- i + 1
-    }
-    
-    Info <-
-      list(
-        "Locations" = Locations,
-        "dis" = dis,
-        "minD" = minD,
-        "numE" = numE,
-        "Locationsh" = Locationsh,
-        "Locationmean" = Locationmean,
-        "Route" = route
-      )
-    Info
+    Info <- getGeoInfo(Locations = Locations, Eis = Eis)
+
   })
-  
-  
-  #reac$numE <- which(apply(dis,1, min)==as.numeric(min(dis)))
   
   output$value <- renderText({
     if (nrow(Info()[["Locations"]]) == 0) {
