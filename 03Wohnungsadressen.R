@@ -29,7 +29,7 @@ Eisfunc <- function(url, Eis = Eis){
     strsplit(" ") %>% 
     lapply(function(x)x[unlist(lapply(x, function(x)x != ""))])
   stranz <- grep(
-    "Straße|strasse|platz|Weg|gasse", 
+    "Straße|strasse|platz|Weg|gasse|str", 
     Anzei[[1]], ignore.case = TRUE)
   stranz <- stranz[!stranz %in% grep("Landstraße", Anzei[[1]], ignore.case = TRUE)][1]
   
@@ -48,7 +48,7 @@ Eisfunc <- function(url, Eis = Eis){
     # Keywords which could be followed by info about the location
     Anzei[[2]]<-tolower(Anzei[[2]])
     Offi <- grep(
-      "U1|U2|U3|U4|U6|U-Bahn|Bus|Haltestelle|Minuten|Fußweg|min|Meter|Straße|strasse|platz|Weg|gasse|nahe|befindet|station|park", 
+      "U1|U2|U3|U4|U6|U-Bahn|Bus|Haltestelle|Minuten|Fußweg|min|Meter|Straße|str|strasse|platz|Weg|gasse|nahe|befindet|station|park", 
       Anzei[[2]], ignore.case = TRUE )
     Loc <- lapply(Offi, function(x)Anzei[[2]][(x-4):(x+6)]) %>% unlist() %>% unique() 
     # filter out stopwords
