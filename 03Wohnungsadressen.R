@@ -1,8 +1,7 @@
 source("00libraries.R")
 
-Eis <- st_read("www/Eis.shp", quiet=TRUE)
 
-Eisfunc <- function(url, Eis = Eis){
+Eisfunc <- function(url){
   if(class(url)!="character"){
     as.character(url)
   }
