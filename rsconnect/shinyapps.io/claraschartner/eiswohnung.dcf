@@ -5,6 +5,8 @@ account: claraschartner
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1576164
-bundleId: 2649980
+bundleId: 2785002
 url: https://claraschartner.shinyapps.io/eiswohnung/
-when: 1575802334.91188
+when: 1581191388.01964
+asMultiple: FALSE
+asStatic: FALSE

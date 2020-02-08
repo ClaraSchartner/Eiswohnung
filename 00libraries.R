@@ -5,5 +5,5 @@ library(tidygeocoder)
 library(leaflet)
 library(osrm)
 library(tidytext)
-
+library(stringr)
 library(osmdata)
