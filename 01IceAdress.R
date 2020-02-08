@@ -17,8 +17,8 @@ Eiscoor <- tibble(Adr= vegadr) %>%
   geocode(Adr, "osm") 
 
 Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
-st_write(Eis, "data/Eis.shp", update = TRUE)
-Eis <- st_read("data/Eis.shp")
+st_write(Eis, "www/Eis.shp", update = TRUE)
+Eis <- st_read("www/Eis.shp")
 
 # Visualize ---------------------------------------------------------------
 Stanizel <- makeIcon("data/StanizelIcon.png",
