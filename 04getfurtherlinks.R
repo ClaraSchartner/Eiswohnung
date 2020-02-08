@@ -26,5 +26,5 @@ posurl<- lapply(posurl, function(x)x[,2]) %>% unlist()
 urllinks <- substr(html, posurl+2, posurl+8)
 urllinks <- urllinks[!duplicated(urllinks)]
 url <- paste0("https://www.immowelt.at/expose/", urllinks)
-url
+url[4:length(url)]
 }
