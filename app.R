@@ -39,7 +39,7 @@ server <- function(input, output) {
       Locations <- Eisfunc(input$caption)
     } else {
       Locations <- tibble(name= paste(input$caption, "Wien")) %>%
-        geocode(name, "osm") %>% 
+        geocode(name, method = "osm") %>% 
         st_as_sf( coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs") 
     }
     Info <- getGeoInfo(Locations = Locations, Eis = Eis)

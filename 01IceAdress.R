@@ -14,7 +14,7 @@ vegadr <- c(vegadr, "Rotenturmstraße 14, 1010 Wien", "Mariahilfer Straße 33, 1
             "Neubaugasse 9, 1070 Wien", "Reumannplatz 13, 1100 Wien")
 # get coordinates for adresses (=geocode)
 Eiscoor <- tibble(Adr= vegadr) %>%
-  geocode(Adr, "osm") 
+  geocode(Adr, method ="osm") 
 
 Eis <- st_as_sf(Eiscoor, coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
 st_write(Eis, "www/Eis.shp", update = TRUE)

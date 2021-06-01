@@ -41,7 +41,7 @@ Eisfunc <- function(url){
   if(length(Anzei[[1]])>2){
     Anzei[[1]] <- paste(Anzei[[1]], collapse = " ")
     Locations <- tibble(name= Anzei[[1]]) %>%
-      geocode(name, "osm") %>% 
+      geocode(name, method = "osm") %>% 
       st_as_sf(coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
   } else{
     # Keywords which could be followed by info about the location
@@ -68,7 +68,7 @@ Eisfunc <- function(url){
     str <- paste(str, "Wien")
     
     Locations<- tibble(name= str) %>%
-      geocode(name, "osm") %>%
+      geocode(name, method = "osm") %>%
       filter(!is.na(lat)) %>% 
       st_as_sf( coords= c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +no_defs") %>% 
       rbind(Locations)
